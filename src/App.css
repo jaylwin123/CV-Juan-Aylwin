@@ -282,8 +282,18 @@ body {
   position: relative;
 }
 
+/* Experience Section Background */
+.section.experience {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
 .section.experience h2 {
   color: white;
+}
+
+/* Hobbies Section Background */
+.section.hobbies {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
 }
 
 .section.hobbies h2 {
@@ -789,6 +799,31 @@ body {
     font-size: 2rem;
   }
   
+  /* Preserve section backgrounds and title styles on mobile */
+  .section.experience {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  }
+  
+  .section.experience h2 {
+    color: white;
+  }
+  
+  .section.experience h2::after {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  }
+  
+  .section.hobbies {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  }
+  
+  .section.hobbies h2 {
+    color: white;
+  }
+  
+  .section.hobbies h2::after {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  }
+  
   .skills-grid,
   .hobbies-description {
     grid-template-columns: 1fr;
@@ -856,6 +891,31 @@ body {
     font-size: 0.95rem;
   }
   
+  /* Preserve section backgrounds and title styles on smaller mobile */
+  .section.experience {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  }
+  
+  .section.experience h2 {
+    color: white;
+  }
+  
+  .section.experience h2::after {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  }
+  
+  .section.hobbies {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  }
+  
+  .section.hobbies h2 {
+    color: white;
+  }
+  
+  .section.hobbies h2::after {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  }
+
   .about-header {
     padding: 25px;
   }
