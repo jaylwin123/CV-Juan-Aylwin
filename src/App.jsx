@@ -4,12 +4,15 @@ import './App.css'
 function App() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   
+  // Helper function for correct image paths
+  const getImagePath = (imageName) => `${import.meta.env.BASE_URL}${imageName}`
+  
   const hobbyImages = [
-    { src: '/hobby-escalada-1.jpg', alt: 'Escalada en montaña', title: 'Escalada' },
-    { src: '/hobby-escalada-2.jpg', alt: 'Escalada en muro', title: 'Muro de escalada' },
-    { src: '/hobby-gaming-1.jpg', alt: 'Setup gaming', title: 'Gaming' },
-    { src: '/hobby-programming-1.jpg', alt: 'Programación', title: 'Programación' },
-    { src: '/hobby-universidad-1.jpg', alt: 'Presidente escalada UAI', title: 'Liderazgo UAI' }
+    { src: `${import.meta.env.BASE_URL}hobby-escalada-1.jpg`, alt: 'Escalada en montaña', title: 'Escalada' },
+    { src: `${import.meta.env.BASE_URL}hobby-escalada-2.jpg`, alt: 'Escalada en muro', title: 'Muro de escalada' },
+    { src: `${import.meta.env.BASE_URL}hobby-gaming-1.jpg`, alt: 'Setup gaming', title: 'Gaming' },
+    { src: `${import.meta.env.BASE_URL}hobby-programming-1.jpg`, alt: 'Programación', title: 'Programación' },
+    { src: `${import.meta.env.BASE_URL}hobby-universidad-1.jpg`, alt: 'Presidente escalada UAI', title: 'Liderazgo UAI' }
   ]
 
   const nextImage = () => {
@@ -37,7 +40,7 @@ function App() {
             <div className="header-left">
               <div className="profile-section">
                 <div className="profile-image">
-                  <img src="/profile-photo.jpg" alt="Juan Aylwin Varela" />
+                  <img src={getImagePath("profile-photo.jpg")} alt="Juan Aylwin Varela" />
                 </div>
                 <div className="profile-info">
                   <h1 className="name">Juan Aylwin Varela</h1>
@@ -45,13 +48,13 @@ function App() {
                   <div className="social-links">
                     <a href="https://www.linkedin.com/in/juan-aylwin-314711278/" target="_blank" rel="noopener noreferrer">
                       <span>
-                        <img src="/linkedin-logo.svg" alt="LinkedIn" className="social-icon" />
+                        <img src={getImagePath("linkedin-logo.svg")} alt="LinkedIn" className="social-icon" />
                         LinkedIn
                       </span>
                     </a>
                     <a href="https://github.com/jaylwin123" target="_blank" rel="noopener noreferrer">
                       <span>
-                        <img src="/github-logo.svg" alt="GitHub" className="social-icon" />
+                        <img src={getImagePath("github-logo.svg")} alt="GitHub" className="social-icon" />
                         GitHub
                       </span>
                     </a>
@@ -158,7 +161,7 @@ function App() {
           <h2>Experiencia Laboral</h2>
           <div className="experience-item">
             <div className="company-logo">
-              <img src="/pedidosya-logo.png" alt="PedidosYa" />
+              <img src={getImagePath("pedidosya-logo.png")} alt="PedidosYa" />
             </div>
             <div className="experience-content">
               <h3>Analista de Datos - PedidosYa</h3>
@@ -171,7 +174,7 @@ function App() {
           </div>
           <div className="experience-item">
             <div className="company-logo">
-              <img src="/flores-ocoa-logo.png" alt="Flores de Ocoa" />
+              <img src={getImagePath("flores-ocoa-logo.png")} alt="Flores de Ocoa" />
             </div>
             <div className="experience-content">
               <h3>Encargado de Inventario - Flores de Ocoa</h3>
@@ -184,7 +187,7 @@ function App() {
           </div>
           <div className="experience-item">
             <div className="company-logo">
-              <img src="/geopark-logo.png" alt="GeoPark Limited" />
+              <img src={getImagePath("geopark-logo.png")} alt="GeoPark Limited" />
             </div>
             <div className="experience-content">
               <h3>Asistente Administrativo - GeoPark Limited</h3>
@@ -204,7 +207,7 @@ function App() {
           <h2>Formación Académica</h2>
           <div className="education-item">
             <div className="institution-logo">
-              <img src="/uai-logo.png" alt="Universidad Adolfo Ibáñez" />
+              <img src={getImagePath("uai-logo.png")} alt="Universidad Adolfo Ibáñez" />
             </div>
             <div className="education-content">
               <h3>Universidad Adolfo Ibáñez</h3>
@@ -216,7 +219,7 @@ function App() {
           </div>
           <div className="education-item">
             <div className="institution-logo">
-              <img src="/verbo-divino-logo.png" alt="Colegio del Verbo Divino" />
+              <img src={getImagePath("verbo-divino-logo.png")} alt="Colegio del Verbo Divino" />
             </div>
             <div className="education-content">
               <h3>Colegio del Verbo Divino</h3>
@@ -264,7 +267,7 @@ function App() {
                 </p>
                 <div className="platform-links">
                   <a href="https://www.strava.com/athletes/189233395" target="_blank" rel="noopener noreferrer" className="strava-link">
-                    <img src="/strava-logo.png" alt="Strava" className="platform-icon" />
+                    <img src={getImagePath("strava-logo.png")} alt="Strava" className="platform-icon" />
                     Seguir en Strava
                   </a>
                 </div>
@@ -276,7 +279,7 @@ function App() {
                 </p>
                 <div className="platform-links">
                   <a href="https://steamcommunity.com/profiles/76561198048418782/" target="_blank" rel="noopener noreferrer" className="steam-link">
-                    <img src="/steam-logo.webp" alt="Steam" className="platform-icon" />
+                    <img src={getImagePath("steam-logo.webp")} alt="Steam" className="platform-icon" />
                     Conectar en Steam
                   </a>
                 </div>
