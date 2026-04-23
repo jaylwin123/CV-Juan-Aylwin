@@ -440,18 +440,6 @@ button {
   display: inline-block;
   color: var(--lime);
 }
-.hero-title .mark::before {
-  content: "";
-  position: absolute;
-  left: -0.08em;
-  right: -0.08em;
-  top: 0.15em;
-  bottom: 0.18em;
-  background: color-mix(in srgb, var(--lime) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--lime) 35%, transparent);
-  border-radius: 6px;
-  z-index: -1;
-}
 
 .hero-bot {
   display: grid;
