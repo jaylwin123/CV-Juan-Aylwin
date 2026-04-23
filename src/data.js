@@ -5,7 +5,8 @@
   roleEs: "Ingeniero de Datos & Producto",
   handle: "@jaylwin",
   age: 26,
-  pitch: "Traduzco preguntas difusas de negocio en modelos, dashboards y decisiones medibles. Me gusta la intersección entre datos, código y producto.",
+  pitch:
+    "Traduzco preguntas difusas de negocio en modelos, dashboards y decisiones medibles. Me gusta la intersección entre datos, código y producto.",
   location: "Santiago · Chile",
   timezone: "GMT-3",
   statusLine: "Disponible para nuevos proyectos",
@@ -23,20 +24,20 @@
   ],
 
   stats: [
-    { num: "6", unit: "años",  lbl: "escalando roca y hielo" },
+    { num: "6", unit: "años", lbl: "escalando roca y hielo" },
     { num: "9", unit: "meses", lbl: "analista en PedidosYa" },
     { num: "3", unit: "roles", lbl: "experiencia profesional" },
-    { num: "25", unit: "'",    lbl: "titulado UAI" },
+    { num: "25", unit: "'", lbl: "titulado UAI" },
   ],
 
   skills: {
-    "Data": [
+    Data: [
       { k: "BigQuery", lvl: 4 },
       { k: "SQL / MySQL", lvl: 4 },
       { k: "Tableau", lvl: 3 },
       { k: "Excel avanzado", lvl: 4 },
     ],
-    "Engineering": [
+    Engineering: [
       { k: "JavaScript / React", lvl: 3 },
       { k: "C++", lvl: 3 },
       { k: "Git + GitHub", lvl: 4 },
@@ -97,7 +98,12 @@
       logo: "uai-logo.png",
       degree: "Ingeniería Civil Informática",
       body: "Formación sólida en pensamiento analítico y resolución de problemas. Enfoque práctico en programación profesional, estructuras de datos y arquitectura cloud.",
-      tags: ["Prog. profesional", "Estructuras de datos", "Cloud", "Bases de datos"],
+      tags: [
+        "Prog. profesional",
+        "Estructuras de datos",
+        "Cloud",
+        "Bases de datos",
+      ],
     },
     {
       badge: "Ed. media",
@@ -113,27 +119,33 @@
   projects: [
     {
       idx: "01",
-      type: "SHIPPED",
-      title: "CV Web Personal",
-      blurb: "Sitio responsive propio, desde maquetación hasta deploy en GitHub Pages. Iteración continua sobre diseño y copy.",
-      stack: ["React", "Vite", "CSS"],
-      link: "github.com/jaylwin123/CV-Juan-Aylwin",
+      type: "IN PROGRESS",
+      title: "REMP",
+      blurb:
+        "Portal que conecta colegios con profesores disponibles para reemplazos — un problema real y no resuelto en Chile. 5 meses en desarrollo, con proyección de ingresos.",
+      stack: ["React", "Node.js", "MongoDB"],
+      link: null,
       vis: "v3",
+      image: "REMP.png",
+      wip: true,
     },
     {
       idx: "02",
-      type: "EXPLORATION",
-      title: "Análisis de Indicadores",
-      blurb: "Exploración de un set público con foco en visualizar patrones útiles para decisiones de negocio.",
-      stack: ["SQL", "BigQuery", "Tableau"],
-      link: "github.com/jaylwin123",
+      type: "SHIPPED",
+      title: "Game Feed",
+      blurb:
+        "Noticiero gamer automatizado con IA: publica actualizaciones, ofertas, reviews y noticias de último momento sin intervención manual.",
+      stack: ["Python", "AI", "Automatización"],
+      link: "gamefeed-nine.vercel.app/dashboard",
       vis: "v2",
+      image: "gamefeed-preview.png",
     },
     {
       idx: "03",
       type: "TOOLING",
       title: "Automatización de Reportes",
-      blurb: "Reducción de tareas repetitivas en flujos administrativos vía scripts ligeros y APIs, con trazabilidad clara.",
+      blurb:
+        "Reducción de tareas repetitivas en flujos administrativos vía scripts ligeros y APIs, con trazabilidad clara.",
       stack: ["JavaScript", "APIs", "Excel"],
       link: "github.com/jaylwin123",
       vis: "v1",

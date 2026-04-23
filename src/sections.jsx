@@ -451,31 +451,58 @@ function Projects() {
       </p>
 
       <div className="proj-grid">
-        {CV.projects.map((p) => (
-          <a
-            className="proj-card"
-            key={p.idx}
-            href={`https://${p.link}`}
-            target="_blank"
-            rel="noopener"
-          >
-            <div className={`proj-vis ${p.vis}`} />
-            <div className="proj-body">
-              <div className="proj-idx">
-                <span>PROJ · {p.idx}</span>
-                <span>{p.type}</span>
+        {CV.projects.map((p) => {
+          const Wrapper = p.link ? "a" : "div";
+          const wrapperProps = p.link
+            ? { href: `https://${p.link}`, target: "_blank", rel: "noopener" }
+            : {};
+          return (
+            <Wrapper className="proj-card" key={p.idx} {...wrapperProps}>
+              {p.image ? (
+                <div className="proj-vis" style={{ padding: 0 }}>
+                  <img
+                    src={asset(p.image)}
+                    alt={p.title}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: "top",
+                      display: "block",
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className={`proj-vis ${p.vis}`} />
+              )}
+              <div className="proj-body">
+                <div className="proj-idx">
+                  <span>PROJ · {p.idx}</span>
+                  <span style={p.wip ? { color: "var(--lime)" } : {}}>
+                    {p.type}
+                  </span>
+                </div>
+                <h3>{p.title}</h3>
+                <p>{p.blurb}</p>
+                <div className="proj-stack">
+                  {p.stack.map((s) => (
+                    <span key={s}>{s}</span>
+                  ))}
+                </div>
+                {p.wip ? (
+                  <div
+                    className="proj-link"
+                    style={{ color: "var(--fg-2)", cursor: "default" }}
+                  >
+                    ⏳ En construcción · URL próximamente
+                  </div>
+                ) : (
+                  <div className="proj-link">Ver repo →</div>
+                )}
               </div>
-              <h3>{p.title}</h3>
-              <p>{p.blurb}</p>
-              <div className="proj-stack">
-                {p.stack.map((s) => (
-                  <span key={s}>{s}</span>
-                ))}
-              </div>
-              <div className="proj-link">Ver repo →</div>
-            </div>
-          </a>
-        ))}
+            </Wrapper>
+          );
+        })}
       </div>
     </section>
   );
@@ -549,30 +576,44 @@ function CommitCounter() {
   const [loading, setLoading] = useState(true);
   const now = new Date();
   const monthName = now.toLocaleDateString("es-CL", { month: "long" });
-  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const daysInMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+  ).getDate();
   const today = now.getDate();
 
   useEffect(() => {
     const n = new Date();
     const since = new Date(n.getFullYear(), n.getMonth(), 1).toISOString();
-    fetch(`https://api.github.com/users/jaylwin123/repos?per_page=100&sort=pushed`)
+    fetch(
+      `https://api.github.com/users/jaylwin123/repos?per_page=100&sort=pushed`,
+    )
       .then((r) => (r.ok ? r.json() : []))
       .then((repos) => {
-        if (!Array.isArray(repos)) { setLoading(false); return; }
+        if (!Array.isArray(repos)) {
+          setLoading(false);
+          return;
+        }
         const activeRepos = repos
           .filter((r) => new Date(r.pushed_at) >= new Date(since))
           .slice(0, 15);
         return Promise.all(
           activeRepos.map((repo) =>
-            fetch(`https://api.github.com/repos/jaylwin123/${repo.name}/commits?author=jaylwin123&since=${since}&per_page=100`)
+            fetch(
+              `https://api.github.com/repos/jaylwin123/${repo.name}/commits?author=jaylwin123&since=${since}&per_page=100`,
+            )
               .then((r) => (r.ok ? r.json() : []))
-              .catch(() => [])
-          )
+              .catch(() => []),
+          ),
         );
       })
       .then((results) => {
         if (!results) return;
-        const buckets = Array.from({ length: daysInMonth }, (_, i) => ({ day: i + 1, count: 0 }));
+        const buckets = Array.from({ length: daysInMonth }, (_, i) => ({
+          day: i + 1,
+          count: 0,
+        }));
         results.flat().forEach((c) => {
           const date = c.commit?.author?.date || c.commit?.committer?.date;
           if (!date) return;
@@ -588,39 +629,80 @@ function CommitCounter() {
   const total = days ? days.reduce((a, b) => a + b.count, 0) : null;
   const max = days ? Math.max(...days.map((d) => d.count), 1) : 1;
 
-  const w = 280, h = 56, gap = 1;
+  const w = 280,
+    h = 56,
+    gap = 1;
   const barW = Math.max(1, (w - gap * (today - 1)) / today);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-        <span style={{ fontSize: 48, fontWeight: 500, letterSpacing: "-0.03em", color: "var(--lime)", lineHeight: 1 }}>
+        <span
+          style={{
+            fontSize: 48,
+            fontWeight: 500,
+            letterSpacing: "-0.03em",
+            color: "var(--lime)",
+            lineHeight: 1,
+          }}
+        >
           {loading ? "…" : (total ?? "—")}
         </span>
-        <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--fg-2)" }}>
+        <span
+          style={{
+            fontFamily: "var(--mono)",
+            fontSize: 11,
+            color: "var(--fg-2)",
+          }}
+        >
           commits este mes
         </span>
       </div>
       {!loading && days && (
-        <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: h, display: "block", overflow: "visible" }}>
+        <svg
+          viewBox={`0 0 ${w} ${h}`}
+          style={{
+            width: "100%",
+            height: h,
+            display: "block",
+            overflow: "visible",
+          }}
+        >
           {days.slice(0, today).map((d, i) => {
-            const barH = d.count > 0 ? Math.max(3, (d.count / max) * (h - 2)) : 2;
+            const barH =
+              d.count > 0 ? Math.max(3, (d.count / max) * (h - 2)) : 2;
             const x = i * (barW + gap);
             const isToday = d.day === today;
             return (
               <rect
                 key={d.day}
-                x={x} y={h - barH}
-                width={barW} height={barH}
+                x={x}
+                y={h - barH}
+                width={barW}
+                height={barH}
                 rx={1}
-                fill={isToday ? "var(--lime)" : d.count > 0 ? "color-mix(in srgb, var(--lime) 55%, transparent)" : "var(--ink-3)"}
+                fill={
+                  isToday
+                    ? "var(--lime)"
+                    : d.count > 0
+                      ? "color-mix(in srgb, var(--lime) 55%, transparent)"
+                      : "var(--ink-3)"
+                }
                 opacity={d.count === 0 ? 0.5 : 1}
               />
             );
           })}
         </svg>
       )}
-      <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--fg-2)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+      <div
+        style={{
+          fontFamily: "var(--mono)",
+          fontSize: 10,
+          color: "var(--fg-2)",
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+        }}
+      >
         {monthName} {now.getFullYear()} · GitHub público · en vivo
       </div>
     </div>
