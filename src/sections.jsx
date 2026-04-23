@@ -231,16 +231,18 @@ function About() {
   return (
     <section className="section" id="about" data-screen-label="01 About">
       <SecMeta num="/ 01" title="Sobre mí" tag="perfil · 2026" />
-      <h2 className="sec-title">
-        Curioso por naturaleza,
-        <br />
-        <span className="ital">analítico</span> por entrenamiento.
-      </h2>
-      <div className="about-grid" style={{ marginTop: 48 }}>
-        <div className="about-prose">
-          {CV.about.map((p, i) => (
-            <p key={i} dangerouslySetInnerHTML={{ __html: p }} />
-          ))}
+      <div className="about-grid" style={{ marginTop: 28 }}>
+        <div>
+          <h2 className="sec-title" style={{ margin: "0 0 32px" }}>
+            Curioso por naturaleza,
+            <br />
+            <span className="ital">analítico</span> por entrenamiento.
+          </h2>
+          <div className="about-prose">
+            {CV.about.map((p, i) => (
+              <p key={i} dangerouslySetInnerHTML={{ __html: p }} />
+            ))}
+          </div>
         </div>
         <div className="stat-panel">
           <div className="stat-panel-head">
@@ -340,7 +342,7 @@ function Experience() {
       id="experience"
       data-screen-label="03 Experience"
     >
-      <SecMeta num="/ 03" title="Experiencia" tag="2023 — 2025" />
+      <SecMeta num="/ 03" title="Experiencia" tag="2023 – 2025" />
       <h2 className="sec-title">
         Donde he <span className="ital">puesto las manos.</span>
       </h2>
@@ -393,7 +395,7 @@ function Education() {
       id="education"
       data-screen-label="04 Education"
     >
-      <SecMeta num="/ 04" title="Formación" tag="2008 — 2025" />
+      <SecMeta num="/ 04" title="Formación" tag="2008 – 2025" />
       <h2 className="sec-title">
         Base <span className="ital">académica.</span>
       </h2>
@@ -470,7 +472,7 @@ function Projects() {
                   <span key={s}>{s}</span>
                 ))}
               </div>
-              <div className="proj-link">Ver repo → </div>
+              <div className="proj-link">Ver repo →</div>
             </div>
           </a>
         ))}
@@ -542,130 +544,85 @@ function Hobbies() {
 }
 
 // ---------- CONTACT ----------
-function Sparkline() {
-  // Self-reported monthly coding hours (estimate based on commits + sessions)
-  const months = ["M", "A", "M", "J", "J", "A", "S", "O", "N", "D", "E", "F"];
-  const points = [42, 58, 66, 74, 88, 95, 110, 124, 102, 118, 132, 140];
-  const max = 160;
-  const w = 280,
-    h = 110,
-    pl = 24,
-    pr = 8,
-    pt = 12,
-    pb = 20;
-  const iw = w - pl - pr,
-    ih = h - pt - pb;
-  const step = iw / (points.length - 1);
-  const xy = (p, i) => [pl + i * step, pt + ih - (p / max) * ih];
-  const path = points
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${xy(p, i).join(" ")}`)
-    .join(" ");
-  const area = path + ` L ${pl + iw} ${pt + ih} L ${pl} ${pt + ih} Z`;
-  const last = points[points.length - 1];
-  const first = points[0];
-  const delta = Math.round(((last - first) / first) * 100);
-  const ticks = [0, 80, 160];
+function CommitCounter() {
+  const [days, setDays] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const now = new Date();
+  const monthName = now.toLocaleDateString("es-CL", { month: "long" });
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const today = now.getDate();
+
+  useEffect(() => {
+    const n = new Date();
+    const since = new Date(n.getFullYear(), n.getMonth(), 1).toISOString();
+    fetch(`https://api.github.com/users/jaylwin123/repos?per_page=100&sort=pushed`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((repos) => {
+        if (!Array.isArray(repos)) { setLoading(false); return; }
+        const activeRepos = repos
+          .filter((r) => new Date(r.pushed_at) >= new Date(since))
+          .slice(0, 15);
+        return Promise.all(
+          activeRepos.map((repo) =>
+            fetch(`https://api.github.com/repos/jaylwin123/${repo.name}/commits?author=jaylwin123&since=${since}&per_page=100`)
+              .then((r) => (r.ok ? r.json() : []))
+              .catch(() => [])
+          )
+        );
+      })
+      .then((results) => {
+        if (!results) return;
+        const buckets = Array.from({ length: daysInMonth }, (_, i) => ({ day: i + 1, count: 0 }));
+        results.flat().forEach((c) => {
+          const date = c.commit?.author?.date || c.commit?.committer?.date;
+          if (!date) return;
+          const d = new Date(date).getDate();
+          if (buckets[d - 1]) buckets[d - 1].count += 1;
+        });
+        setDays(buckets);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const total = days ? days.reduce((a, b) => a + b.count, 0) : null;
+  const max = days ? Math.max(...days.map((d) => d.count), 1) : 1;
+
+  const w = 280, h = 56, gap = 1;
+  const barW = Math.max(1, (w - gap * (today - 1)) / today);
 
   return (
-    <div className="spark-wrap">
-      <div className="spark-header">
-        <span className="spark-val">
-          {last}
-          <span className="spark-unit">h/mes</span>
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+        <span style={{ fontSize: 48, fontWeight: 500, letterSpacing: "-0.03em", color: "var(--lime)", lineHeight: 1 }}>
+          {loading ? "…" : (total ?? "—")}
         </span>
-        <span className="spark-delta">▲ +{delta}% vs. año ant.</span>
+        <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--fg-2)" }}>
+          commits este mes
+        </span>
       </div>
-      <svg
-        className="spark"
-        viewBox={`0 0 ${w} ${h}`}
-        preserveAspectRatio="none"
-      >
-        {ticks.map((t) => {
-          const y = pt + ih - (t / max) * ih;
-          return (
-            <g key={t}>
-              <line
-                x1={pl}
-                y1={y}
-                x2={pl + iw}
-                y2={y}
-                stroke="var(--ink-3)"
-                strokeDasharray="2 3"
+      {!loading && days && (
+        <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: h, display: "block", overflow: "visible" }}>
+          {days.slice(0, today).map((d, i) => {
+            const barH = d.count > 0 ? Math.max(3, (d.count / max) * (h - 2)) : 2;
+            const x = i * (barW + gap);
+            const isToday = d.day === today;
+            return (
+              <rect
+                key={d.day}
+                x={x} y={h - barH}
+                width={barW} height={barH}
+                rx={1}
+                fill={isToday ? "var(--lime)" : d.count > 0 ? "color-mix(in srgb, var(--lime) 55%, transparent)" : "var(--ink-3)"}
+                opacity={d.count === 0 ? 0.5 : 1}
               />
-              <text
-                x={pl - 4}
-                y={y + 3}
-                fill="var(--fg-2)"
-                fontSize="8"
-                textAnchor="end"
-                fontFamily="var(--mono)"
-              >
-                {t}
-              </text>
-            </g>
-          );
-        })}
-        <path d={area} fill="url(#sparkGrad)" opacity="0.25" />
-        <path
-          d={path}
-          fill="none"
-          stroke="var(--lime)"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
-        {points.map((p, i) => {
-          const [x, y] = xy(p, i);
-          const isLast = i === points.length - 1;
-          return (
-            <g key={i}>
-              <circle cx={x} cy={y} r={isLast ? 3.5 : 1.8} fill="var(--lime)" />
-              {isLast && (
-                <circle
-                  cx={x}
-                  cy={y}
-                  r="6"
-                  fill="none"
-                  stroke="var(--lime)"
-                  strokeWidth="1"
-                  opacity="0.4"
-                >
-                  <animate
-                    attributeName="r"
-                    from="3.5"
-                    to="10"
-                    dur="1.8s"
-                    repeatCount="indefinite"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    from="0.5"
-                    to="0"
-                    dur="1.8s"
-                    repeatCount="indefinite"
-                  />
-                </circle>
-              )}
-              <text
-                x={x}
-                y={h - 6}
-                fill="var(--fg-2)"
-                fontSize="8"
-                textAnchor="middle"
-                fontFamily="var(--mono)"
-              >
-                {months[i]}
-              </text>
-            </g>
-          );
-        })}
-        <defs>
-          <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--lime)" />
-            <stop offset="100%" stopColor="var(--lime)" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-      </svg>
+            );
+          })}
+        </svg>
+      )}
+      <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--fg-2)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+        {monthName} {now.getFullYear()} · GitHub público · en vivo
+      </div>
     </div>
   );
 }
@@ -692,11 +649,11 @@ function Contact() {
             Estoy abierto a conversar sobre roles de analytics, data science
             aplicada o ingeniería de producto. La primera llamada es gratis y
             puede durar 20 minutos o dos horas — depende de qué tan entretenido
-            esté el problema.
+            está el problema.
           </p>
           <div className="contact-cta-row">
             <a className="hero-cta" href={`mailto:${c.email}`}>
-              Escríbeme <span className="arr">→</span>
+              Escríbeme <span className="arr">?</span>
             </a>
             <a
               className="hero-ghost"
@@ -713,7 +670,7 @@ function Contact() {
                 <>
                   <span className="k">{r.k}</span>
                   <span className="v">{r.v}</span>
-                  <span className="arr">{r.href ? "↗" : ""}</span>
+                  <span className="arr">{r.href ? "?" : ""}</span>
                 </>
               );
               return r.href ? (
@@ -745,12 +702,10 @@ function Contact() {
             </p>
           </div>
           <div className="mini-card">
-            <span className="kicker">Horas codificadas · últ. 12 meses</span>
-            <Sparkline />
-            <p style={{ marginTop: 4, fontSize: 12, color: "var(--fg-2)" }}>
-              Estimación propia — no son commits automáticos. Mezcla de sesiones
-              de trabajo y estudio.
-            </p>
+            <span className="kicker">
+              Actividad en GitHub · este mes · en vivo
+            </span>
+            <CommitCounter />
           </div>
           <div className="mini-card">
             <span className="kicker">Preferencia</span>
@@ -776,7 +731,7 @@ function Foot() {
       <div className="foot-meta">
         <span>© 2026 · Hecho en React · Diseñado por mí</span>
         <span>Última actualización · abr 2026</span>
-        <span>v2026.04 — build stable</span>
+        <span>v2026.04 – build stable</span>
       </div>
     </footer>
   );
