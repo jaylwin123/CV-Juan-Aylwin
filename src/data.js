@@ -12,7 +12,7 @@
   statusLine: "Disponible para nuevos proyectos",
 
   contact: {
-    email: "juan.aylwin@mail.com",
+    email: "aylwin1221@gmail.com",
     phone: "+56 9 6156 4449",
     linkedin: "linkedin.com/in/juan-aylwin-314711278",
     github: "github.com/jaylwin123",
