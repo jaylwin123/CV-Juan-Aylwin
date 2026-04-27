@@ -2,7 +2,7 @@
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/ {
   theme: "light",
-  accent: "electric",
+  accent: "orange",
   density: "comfy",
 }; /*EDITMODE-END*/
 
